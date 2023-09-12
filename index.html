@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGL Letter Drawing</title>
+</head>
+<body>
+    <canvas id="canvas" width="1920" height="720"></canvas>
+    
+    <script>
+        // Vertex shader program
+        const vsSource = `
+            attribute vec2 aPosition;
+            
+            void main(void) {
+                gl_Position = vec4(aPosition, 0.0, 1.0);
+            }
+        `;
+        
+        // Fragment shader program
+        const fsSource = `
+            precision mediump float;
+            uniform vec4 uColor;
+            
+            void main(void) {
+                gl_FragColor = uColor;
+            }
+        `;
+
+        // Vertex data for the letter 'A'
+        const letterVertices = new Float32Array([
+            0.0, -1.0,
+        ]);
+
+        // Initialize WebGL
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl');
+        if (!gl) {
+            alert('WebGL not supported, falling back on experimental-webgl');
+            gl = canvas.getContext('experimental-webgl');
+        }
+        if (!gl) {
+            alert('Your browser does not support WebGL');
+        }
+
+        // Compile shaders and create shader program
+        const shaderProgram = gl.createProgram();
+        const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vertexShader, vsSource);
+        gl.compileShader(vertexShader);
+        gl.attachShader(shaderProgram, vertexShader);
+        
+        const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragmentShader, fsSource);
+        gl.compileShader(fragmentShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        
+        gl.linkProgram(shaderProgram);
+        gl.useProgram(shaderProgram);
+
+        // Create and bind a vertex buffer object (VBO)
+        const vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, letterVertices, gl.STATIC_DRAW);
+
+        // Bind the attribute location for the position
+        const positionAttributeLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.enableVertexAttribArray(positionAttributeLocation);
+        gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+        // Set uniform for color
+        const colorUniformLocation = gl.getUniformLocation(shaderProgram, 'uColor');
+        gl.uniform4f(colorUniformLocation, 1.0, 0.0, 0.0, 1.0); // Red color
+
+        // Clear the canvas
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        // Draw the letter 'A'
+        gl.drawArrays(gl.LINES, 0, 2);
+
+    </script>
+</body>
+</html>
