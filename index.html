@@ -27,8 +27,26 @@
         `;
 
         // Vertex data for the letter 'A'
-        const letterVertices = new Float32Array([
-            0.0, -1.0,
+        const nameLetter = new Float32Array([
+            -0.2, 0.0,
+            -0.2, 0.5,
+            -0.150, 0.0,
+            -0.150, 0.5,
+            -0.150, 0.25,
+            -0.050, 0.25,
+            -0.050, 0.0,
+            -0.050, 0.5,
+            0.0, 0.5,
+            0.1, 0.5,
+            0.0, 0.5,
+            0.0, 0.25,
+            0.0, 0.25,
+            0.1, 0.25,
+            0.1, 0.25,
+            0.1, 0.0,
+            0.0, 0.0,
+            0.1, 0.0,
+
         ]);
 
         // Initialize WebGL
@@ -60,7 +78,7 @@
         // Create and bind a vertex buffer object (VBO)
         const vbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-        gl.bufferData(gl.ARRAY_BUFFER, letterVertices, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, nameLetter, gl.STATIC_DRAW);
 
         // Bind the attribute location for the position
         const positionAttributeLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
@@ -69,14 +87,14 @@
 
         // Set uniform for color
         const colorUniformLocation = gl.getUniformLocation(shaderProgram, 'uColor');
-        gl.uniform4f(colorUniformLocation, 1.0, 0.0, 0.0, 1.0); // Red color
+        gl.uniform4f(colorUniformLocation, 0.75, 0.75, 0.75, 1.0); // Red color
 
         // Clear the canvas
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         // Draw the letter 'A'
-        gl.drawArrays(gl.LINES, 0, 2);
+        gl.drawArrays(gl.LINES, 0, 20);
 
     </script>
 </body>
