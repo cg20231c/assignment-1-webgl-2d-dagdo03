@@ -27,15 +27,20 @@
         `;
 
         // Vertex data for the letter 'A'
-        const nameLetter = new Float32Array([
+        const nameLine = new Float32Array([
+            // I Letter
             -0.2, 0.0,
             -0.2, 0.5,
+
+            // H Letter
             -0.150, 0.0,
             -0.150, 0.5,
             -0.150, 0.25,
             -0.050, 0.25,
             -0.050, 0.0,
             -0.050, 0.5,
+
+            // S Letter
             0.0, 0.5,
             0.1, 0.5,
             0.0, 0.5,
@@ -49,6 +54,96 @@
 
         ]);
 
+        const nameTriangle = new Float32Array([
+        // I Letter
+        // First triangle
+        -0.2, 0.5,
+        -0.2, 0.0,
+        -0.175, 0.5,
+
+        -0.175, 0.5,
+        -0.175, 0.0,
+        -0.2, 0.0,
+        
+        // H Letter
+        // Second triangle
+        -0.1, 0.5,
+        -0.1, 0.0,
+        -0.125, 0.0,
+        
+        
+        -0.125, 0.5,
+        -0.125, 0.0,
+        -0.1, 0.5,
+
+        //third triangle
+        -0.1, 0.2,
+        -0.1, 0.25,
+        0.0, 0.2,
+
+        0.0, 0.2,
+        0.0, 0.25,
+        -0.1, 0.25,
+
+        //fourth triangle
+        0.0, 0.0,
+        0.025, 0.0,
+        0.025, 0.5,
+
+        0.025, 0.5,
+        0.0, 0.5,
+        0.0, 0.0,   
+
+        // S Letter
+        //Fifth triangle
+        0.085, 0.5,
+        0.085, 0.45,
+        0.2, 0.5,
+
+        
+        0.2, 0.5,
+        0.2, 0.45,
+        0.085, 0.45,
+
+        // Sixth triangle
+        0.085, 0.5,
+        0.085, 0.2,
+        0.11, 0.2,
+
+        
+        0.11, 0.5,
+        0.11, 0.2,
+        0.085, 0.5,
+
+        // Seventh triangle
+        0.085, 0.25,
+        0.2, 0.25,
+        0.085, 0.2,
+
+        
+        0.2,  0.25,
+        0.2, 0.2,
+        0.085, 0.2,
+
+        // Eight triangle
+        0.177, 0.0,
+        0.2, 0.0,
+        0.2, 0.25,
+
+        0.2, 0.25,
+        0.177, 0.25,
+        0.177, 0.0,
+
+        // Ninth triangle
+        0.085, 0.0,
+        0.085, 0.05,
+        0.2, 0.0,
+
+        0.2, 0.0,
+        0.2, 0.05,
+        0.085, 0.05
+        ]);
+        
         // Initialize WebGL
         const canvas = document.getElementById('canvas');
         const gl = canvas.getContext('webgl');
@@ -75,26 +170,58 @@
         gl.linkProgram(shaderProgram);
         gl.useProgram(shaderProgram);
 
-        // Create and bind a vertex buffer object (VBO)
-        const vbo = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-        gl.bufferData(gl.ARRAY_BUFFER, nameLetter, gl.STATIC_DRAW);
+        function drawLine(){
+            const vbo = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+            gl.bufferData(gl.ARRAY_BUFFER, nameLine, gl.STATIC_DRAW);
 
-        // Bind the attribute location for the position
-        const positionAttributeLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
-        gl.enableVertexAttribArray(positionAttributeLocation);
-        gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+            // Bind the attribute location for the position
+            const positionAttributeLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-        // Set uniform for color
-        const colorUniformLocation = gl.getUniformLocation(shaderProgram, 'uColor');
-        gl.uniform4f(colorUniformLocation, 0.75, 0.75, 0.75, 1.0); // Red color
+            // Set uniform for color
+            const colorUniformLocation = gl.getUniformLocation(shaderProgram, 'uColor');
+            gl.uniform4f(colorUniformLocation, 0.75, 0.75, 0.75, 1.0); // Red color
+        }
 
-        // Clear the canvas
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        function drawTriangle(){
+            const vbo = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+            gl.bufferData(gl.ARRAY_BUFFER, nameTriangle, gl.STATIC_DRAW);
 
-        // Draw the letter 'A'
-        gl.drawArrays(gl.LINES, 0, 20);
+            // Bind the attribute location for the position
+            const positionAttributeLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+            // Set uniform for color
+            const colorUniformLocation = gl.getUniformLocation(shaderProgram, 'uColor');
+            gl.uniform4f(colorUniformLocation, 0.0, 0.0, 0.5, 1.0); // Red color
+        }
+
+        let isLinesMode = false; // Initial mode is gl.LINES
+
+        function toggleDrawingMode() {
+            isLinesMode = !isLinesMode; // Toggle the drawing mode
+
+            if (isLinesMode) {
+                drawLine(); // Switch to gl.LINES
+                gl.clearColor(0.0, 0.0, 0.0, 1.0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.drawArrays(gl.LINES, 0, 18);
+            } else {
+                drawTriangle(); // Switch to gl.TRIANGLES
+                gl.clearColor(0.75, 0.75, 0.75, 1.0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.drawArrays(gl.TRIANGLES, 0, 54);
+            }
+            
+            setTimeout(toggleDrawingMode, 3000);
+        }
+        
+        toggleDrawingMode();
+
 
     </script>
 </body>
